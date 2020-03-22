@@ -282,3 +282,9 @@ daphne:
 tyrquake:
   emulator: libretro
   core:     tyrquake
+windows:
+  emulator: wine
+  core:     wine
+windows_installers:
+  emulator: wine
+  core:     wine
