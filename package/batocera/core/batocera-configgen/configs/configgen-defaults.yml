@@ -295,4 +295,3 @@ windows:
 windows_installers:
   emulator: wine
   core:     wine
-
