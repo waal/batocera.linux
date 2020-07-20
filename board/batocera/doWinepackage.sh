@@ -138,11 +138,11 @@ done
 
 # binaries
 echo "binaries..."
-mkdir -p "${TMPOUT}/usr/bin"                           || exit 1
+mkdir -p "${TMPOUT}/usr/bin32"                           || exit 1
 echo " wine binaries"
-cp -p "${G_TARGETDIR}/usr/bin/cabextract"          "${TMPOUT}/usr/bin/" || exit 1
-cp -p "${G_TARGETDIR}/usr/bin/wine"*          "${TMPOUT}/usr/bin/" || exit 1
-cp -p "${G_TARGETDIR}/usr/bin/gst"*          "${TMPOUT}/usr/bin/" || exit 1
+cp -p "${G_TARGETDIR}/usr/bin/cabextract"          "${TMPOUT}/usr/bin32/" || exit 1
+cp -p "${G_TARGETDIR}/usr/bin/wine"*          "${TMPOUT}/usr/bin32/" || exit 1
+cp -p "${G_TARGETDIR}/usr/bin/gst"*          "${TMPOUT}/usr/bin32/" || exit 1
 
 # dri
 echo "dri..."
