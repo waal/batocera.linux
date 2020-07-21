@@ -1344,7 +1344,8 @@ windows:
   theme:      pc
   emulators:
     wine:
-      wine:  { requireAnyOf: [BR2_PACKAGE_WINE] }
+      wine32:  { requireAnyOf: [BR2_PACKAGE_BATOCERA_WINE32] }
+      wine64:  { requireAnyOf: [BR2_PACKAGE_BATOCERA_WINE64] }
 
 windows_installers:
   name:       Windows installers
@@ -1356,7 +1357,8 @@ windows_installers:
   theme:      pc
   emulators:
     wine:
-      wine:  { requireAnyOf: [BR2_PACKAGE_WINE] }
+      wine32:  { requireAnyOf: [BR2_PACKAGE_BATOCERA_WINE32] }
+      wine64:  { requireAnyOf: [BR2_PACKAGE_BATOCERA_WINE64] }
 
 imageviewer:
   name:       Screenshots

@@ -291,7 +291,7 @@ openbor:
     filter: 0
 windows:
   emulator: wine
-  core:     wine
+  core:     wine32
 windows_installers:
   emulator: wine
-  core:     wine
+  core:     wine32
