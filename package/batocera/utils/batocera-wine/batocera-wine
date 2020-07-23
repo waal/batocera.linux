@@ -3,6 +3,8 @@
 set -x
 
 ACTION=$1
+ARCH=$2
+shift
 shift
 
 G_WINE_VERSION=$(wine --version)
@@ -10,52 +12,47 @@ G_SAVES_DIR="/userdata/saves/windows"
 G_ROMS_DIR="/userdata/roms/windows"
 G_LAST_BASE_IMAGE="${G_ROMS_DIR}/bases/${G_WINE_VERSION}.base"
 
+if test "${ARCH}" = 32
+then
+    PATH=/usr/bin32:$PATH
+    export LD_LIBRARY_PATH="/lib32"
+    export LIBGL_DRIVERS_PATH="/lib32/dri"
+    export WINEDLLPATH="/lib32/wine:/lib32/wine/fakedlls"
+fi
+
 usage() {
-    echo "${1} play    <game>.iso"             >&2
-    echo "${1} play    <game>.exe"             >&2
-    echo "${1} play    <game>.wine"            >&2
-    echo "${1} play    <game>.autonomous"      >&2
-    echo "${1} play    <game>.wine.squashfs"   >&2
-    echo "${1} install <game>.iso"             >&2
-    echo "${1} install <game>.exe"             >&2
-    echo "${1} install <game>.wine"            >&2
-    echo "${1} tricks  <game>.wine directplay" >&2
-    echo "${1} wine2squashfs     <game.wine>"  >&2
-    echo "${1} wine2fullsquashfs <game.wine>"  >&2
+    echo "${1} play    	     32 <game>.iso"             >&2
+    echo "${1} play    	     64 <game>.exe"             >&2
+    echo "${1} play    	     32 <game>.wine"            >&2
+    echo "${1} play    	     32 <game>.autonomous"      >&2
+    echo "${1} play    	     32 <game>.wine.squashfs"   >&2
+    echo "${1} install 	     32 <game>.iso"             >&2
+    echo "${1} install 	     32 <game>.exe"             >&2
+    echo "${1} install 	     32 <game>.wine"            >&2
+    echo "${1} tricks  	     32 <game>.wine directplay" >&2
+    echo "${1} wine2squashfs 32 <game.wine>"            >&2
 }
 
-createLastBaseImage() {
+createWineDirectory() {
+    WINEPREFIX=$1
+
     # already created
-    test -e "${G_LAST_BASE_IMAGE}" && return 0
+    test -e "${WINEPREFIX}" && return 0
 
-    # TODO : LOGO, later
-    echo "creating base image ${G_LAST_BASE_IMAGE}..." >&2
-    
-    TMPBASE="/tmp/base.wine.$$"
-    mkdir -p "${TMPBASE}"          || return 1
-    mkdir -p "${G_ROMS_DIR}/bases" || return 1
+    # please wait screen
+    bsod-wine&
+    BSODPID=$!
+  
+    mkdir -p "${WINEPREFIX}" || return 1
 
-    export WINEPREFIX=${TMPBASE}
-    if ! wine hostname
+    if ! WINEPREFIX=${WINEPREFIX} wine hostname
     then
-	rm -rf "${TMPBASE}"
+	rm -rf "${WINEPREFIX}"
 	return 1
     fi
 
-    if ! mksquashfs "${TMPBASE}" "${G_LAST_BASE_IMAGE}".part
-    then
-	rm -rf "${TMPBASE}"
-	return 1
-    fi
+    kill -15 ${BSODPID}
 
-    # in case the user kills the procedure
-    if ! mv "${G_LAST_BASE_IMAGE}".part "${G_LAST_BASE_IMAGE}"
-    then
-	rm -rf "${TMPBASE}"
-	return 1
-    fi
-
-    rm -rf "${TMPBASE}"
     return 0
 }
 
@@ -199,13 +196,10 @@ getWine_var() {
 
 play_wine() {
     GAMENAME=$1
-    ENDWINEMOUNT="/var/run/wine/${GAMENAME}"
-
-    mount_wine   "${GAMENAME}" "wine" play || return 1
+    ENDWINEMOUNT="/userdata/roms/windows/${GAMENAME}"
     WINE_CMD=$(getWine_var "${ENDWINEMOUNT}" "CMD" "explorer")
     WINE_DIR=$(getWine_var "${ENDWINEMOUNT}" "DIR" "")
     (cd "${ENDWINEMOUNT}/${WINE_DIR}" && WINEPREFIX=${ENDWINEMOUNT} wine ${WINE_CMD})
-    unmount_wine "${GAMENAME}" "wine" play || return 1
 }
 
 trick_wine() {
@@ -414,7 +408,7 @@ exit 0
 # TODO : baseimage HS, later, to be confirmed
 # TODO : .cache for wget files
 
-.wine in windows
+x.wine in windows
 .exe  in windows .wine in saves, no overlay
 .iso  in windows .wine in saves, no overlay
 .squashfs in windows .wine in save, overlay
