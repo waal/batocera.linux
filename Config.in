@@ -84,6 +84,11 @@ menu "Controllers"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/controllers/retrogame/Config.in"
 endmenu
 
+menu "Drivers"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/drivers/rtl8812au-dkms-module/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/drivers/rtl8821ce-module/Config.in"
+endmenu
+
 menu "Emulators"
   menu "Retroarch"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/retroarch/retroarch/Config.in"

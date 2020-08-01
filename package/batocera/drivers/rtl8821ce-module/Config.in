@@ -1,0 +1,3 @@
+config BR2_PACKAGE_RTL8821CE_MODULE
+	bool "rtl8821ce-module"
+	depends on BR2_LINUX_KERNEL

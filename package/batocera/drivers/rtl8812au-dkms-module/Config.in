@@ -1,0 +1,3 @@
+config BR2_PACKAGE_RTL8812AU_DKMS_MODULE
+	bool "rtl8812au-dkms-module"
+	depends on BR2_LINUX_KERNEL
