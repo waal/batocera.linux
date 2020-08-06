@@ -31,6 +31,42 @@ usage() {
     echo "${1} install 	     32 <game>.wine"            >&2
     echo "${1} tricks  	     32 <game>.wine directplay" >&2
     echo "${1} wine2squashfs 32 <game.wine>"            >&2
+    echo "${1} wine2fullsquashfs 32 <game.wine>"  >&2
+}
+
+createLastBaseImage() {
+    # already created
+    test -e "${G_LAST_BASE_IMAGE}" && return 0
+
+    # TODO : LOGO, later
+    echo "creating base image ${G_LAST_BASE_IMAGE}..." >&2
+    
+    TMPBASE="/tmp/base.wine.$$"
+    mkdir -p "${TMPBASE}"          || return 1
+    mkdir -p "${G_ROMS_DIR}/bases" || return 1
+
+    export WINEPREFIX=${TMPBASE}
+    if ! wine hostname
+    then
+	rm -rf "${TMPBASE}"
+	return 1
+    fi
+
+    if ! mksquashfs "${TMPBASE}" "${G_LAST_BASE_IMAGE}".part
+    then
+	rm -rf "${TMPBASE}"
+	return 1
+    fi
+
+    # in case the user kills the procedure
+    if ! mv "${G_LAST_BASE_IMAGE}".part "${G_LAST_BASE_IMAGE}"
+    then
+	rm -rf "${TMPBASE}"
+	return 1
+    fi
+
+    rm -rf "${TMPBASE}"
+    return 0
 }
 
 createWineDirectory() {
